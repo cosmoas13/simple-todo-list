@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Form, Container, Table, Navbar } from "react-bootstrap";
+import { Button, Form, Container, Table, Navbar, Modal } from "react-bootstrap";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { item: [], text: "", show: false };
+    this.state = { item: [], edit: null, text: "", isopen: false };
   }
 
   handleModal() {
@@ -35,6 +35,25 @@ class App extends Component {
     this.setState({
       item: this.state.item.concat(this.state.text),
       text: ""
+    });
+  };
+
+  handlePostEdit = e => {
+    e.preventDefault();
+    var items = this.state.item;
+    var citrus = items.splice(this.state.edit.index, 1, this.state.text);
+    this.setState({
+      item: items,
+      text: "",
+      edit: null
+    });
+  };
+
+  handleEdit = (e, index, key) => {
+    e.preventDefault();
+    this.setState({
+      edit: { index, key },
+      text: key
     });
   };
 
@@ -71,7 +90,7 @@ class App extends Component {
                 <td>{key}</td>
                 <td>
                   <Button
-                    onClick={this.handleClick}
+                    onClick={e => this.handleEdit(e, index, key)}
                     variant="success"
                     type="submit"
                     size="sm"
@@ -80,7 +99,7 @@ class App extends Component {
                     Edit
                   </Button>{" "}
                   <Button
-                    onClick={this.handleDelete}
+                    onClick={() => this.handleDelete(index)}
                     variant="danger"
                     type="submit"
                     size="sm"
@@ -94,16 +113,35 @@ class App extends Component {
         </Table>
         <Form>
           <Form.Group controlId="formBasicEmail">
-            <Form.Control
-              value={this.state.text}
-              onChange={this.handleChange}
-              type="text"
-              placeholder="Masukkan Sesuatu"
-            />
+            {this.state.edit === null ? (
+              <Form.Control
+                value={this.state.text}
+                onChange={this.handleChange}
+                type="text"
+                placeholder="Masukkan Sesuatu"
+              />
+            ) : (
+              <Form.Control
+                value={this.state.text}
+                onChange={this.handleChange}
+                type="text"
+                placeholder="Masukkan Sesuatu"
+              />
+            )}
           </Form.Group>
-          <Button onClick={this.handleClick} variant="primary" type="submit">
-            Submit
-          </Button>
+          {this.state.edit === null ? (
+            <Button onClick={this.handleClick} variant="primary" type="submit">
+              Submit
+            </Button>
+          ) : (
+            <Button
+              onClick={this.handlePostEdit}
+              variant="primary"
+              type="submit"
+            >
+              Edit
+            </Button>
+          )}
         </Form>
       </Container>
     );
