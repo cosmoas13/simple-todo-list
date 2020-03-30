@@ -56,7 +56,7 @@ class App extends Component {
 
         <input value={this.state.text} onChange={this.handleChange}></input>
 
-        <button onClick={this.handleClick}>sange</button>
+        <button onClick={this.handleClick}>Tambah</button>
       </>
     );
   }
